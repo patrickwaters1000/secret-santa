@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Secret Santa</title>
+  </head>
+  <body>
+    <d id="messages"></ul>
+    <div>
+      <p>Name</p>
+      <input id="nameInput" />
+      <button id="sendButton">Send</button>
+      <p id="secretSantasParagraph">Your secret santas = ?</p>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+
+      socket.on("secret-santas", x => {
+        e = document.getElementById("secretSantasParagraph");
+        e.innerHTML = `Your secret santas = ${x}`;
+      });
+      
+      document.getElementById("sendButton").onclick = () => {
+        name = document.getElementById("nameInput").value;
+        socket.emit("ready", name);
+      }
+    </script>
+  </body>
+</html>

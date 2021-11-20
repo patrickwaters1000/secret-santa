@@ -1,0 +1,11 @@
+{
+  "name": "secret-santa",
+  "version": "0.0.1",
+  "description": "Assigns gift recipients for a secret santa event.",
+  "dependencies": {
+    "express": "^4.17.1",
+    "lodash": "^4.17.21",
+    "minimist": "^1.2.5",
+    "socket.io": "^4.3.2"
+  }
+}
