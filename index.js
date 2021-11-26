@@ -11,8 +11,13 @@ const users = argv['u'].split(",");
 const giftsPerUser = argv['g'];
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/dist/index.html');
 });
+
+app.get('/main.js', (req, res) => {
+  res.sendFile(__dirname + '/dist/main.js');
+});
+
 
 const connectedUsers = [];
 
@@ -116,19 +121,21 @@ const sendSecretSantaAssignments = assignments => {
 	`Cannot find ${name} in ${JSON.stringify(assignments)}`
       );
     }
-    let listsStr = lists.map(l => `${l[0]}${l[1]}`).join(", ");
+    let listsStr = lists.map(l => `${l[0]}${l[1]}`);
     let socket = getSocket(name);
     socket.emit('secret-santas', listsStr);
   }
 };
 
 io.on('connection', socket => {
+  socket.emit('all-users', users);
   socket.on('ready', name => {
     if (users.includes(name)) {
       connectedUsers.push({
 	name: name,
 	socket: socket
       });
+      io.emit('ready-users', connectedUsers.map(x => x.name));
       console.log(`${name} is ready.`);
       if (isEveryoneReady()) {
 	assignments = assignSecretSantas(1000);
@@ -151,8 +158,9 @@ io.on('disconnect', socket => {
   if (!success) {
     console.log(`Failed to drop user ${name}.`);
   }
+  io.emit('ready-users', connectedUsers.map(x => x.name));
 });
 
-server.listen(3000, () => {
-  console.log('listening on *:3000');
+server.listen(443, () => {
+  console.log('listening on *:443');
 });
